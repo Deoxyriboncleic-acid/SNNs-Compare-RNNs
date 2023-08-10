@@ -9,18 +9,18 @@ import torch, time, os
 import torch.nn as nn
 import torch.nn.functional as F
 
-os.environ['CUDA_VISIBLE_DEVICES'] = "0"
-thresh = 0.3
+os.environ['CUDA_VISIBLE_DEVICES'] = "0 , 1"
+thresh = 0.3 # neuron activate threshold
 lens = 0.25
 decay = 0.3
 num_classes = 10
-batch_size = 40
+batch_size =  40
 num_epochs = 100
 learning_rate = 1e-4
 time_window = 15
 names = 'nmnist_snn_5ms_new'
 
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 train_path = r'/home/wqy/SNNs-RNNs/N-MNIST_data/NMNIST_train_data.mat'
 test_path = r'/home/wqy/SNNs-RNNs/N-MNIST_data/NMNIST_test_data.mat'
 # load datasets
@@ -30,7 +30,9 @@ test_dataset = MyDataset(test_path, 'nmnist_r')
 
 test_loader = torch.utils.data.DataLoader(dataset=test_dataset,
                                           batch_size=batch_size,
-                                          shuffle=False, drop_last=True)
+                                          shuffle=False, drop_last=True) 
+#shuffle 是否在每个 epoch 之前打乱数据集的顺序。这里设置为 False，即不打乱数据集的顺序
+#drop_last 如果数据集大小不能被 batch_size 整除的话，那么最后剩余多少就不要了
 
 train_loader = torch.utils.data.DataLoader(dataset=train_dataset,
                                            batch_size=batch_size,
@@ -39,6 +41,7 @@ train_loader = torch.utils.data.DataLoader(dataset=train_dataset,
 
 
 class ActFun(torch.autograd.Function):
+# 自定义激活函数
 
     @staticmethod
     def forward(ctx, input):
@@ -100,11 +103,16 @@ class SNN_Model(nn.Module):
 def mem_update(fc, x, mem, spike):
   
     mem = mem * decay * (1 - spike) + fc(x)
+    #TODO:iterative version(4)
     spike = act_fun(mem)
     return mem, spike
 
 snn = SNN_Model()
+#snn = nn.DataParallel(snn)
+#snn = nn.parallel.DistributedDataParallel(snn)
 snn.to(device)
+
+# Loss and Optimizer
 criterion = nn.MSELoss()
 optimizer = torch.optim.Adam(snn.parameters(), lr=learning_rate)
 
