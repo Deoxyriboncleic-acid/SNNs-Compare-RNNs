@@ -14,7 +14,7 @@ thresh = 0.3 # neuron activate threshold
 lens = 0.25
 decay = 0.3
 num_classes = 10
-batch_size =  40
+batch_size = 50
 num_epochs = 100
 learning_rate = 1e-4
 time_window = 15
@@ -41,7 +41,7 @@ train_loader = torch.utils.data.DataLoader(dataset=train_dataset,
 
 
 class ActFun(torch.autograd.Function):
-# 自定义激活函数
+#TODO自定义激活函数
 
     @staticmethod
     def forward(ctx, input):
@@ -53,7 +53,7 @@ class ActFun(torch.autograd.Function):
         input, = ctx.saved_tensors
         grad_input = grad_output.clone()
         temp = abs(input - thresh) < lens
-        return grad_input * temp.float() / (2 * lens)
+        return grad_input * temp.float() / (2 * lens) #平衡因子
 
 
 cfg_fc = [512, 512, 10]
@@ -101,9 +101,9 @@ class SNN_Model(nn.Module):
         return outputs
 
 def mem_update(fc, x, mem, spike):
+    #TODOmem:membrane potential
   
     mem = mem * decay * (1 - spike) + fc(x)
-    #TODO:iterative version(4)
     spike = act_fun(mem)
     return mem, spike
 
@@ -113,6 +113,7 @@ snn = SNN_Model()
 snn.to(device)
 
 # Loss and Optimizer
+#TODO进行评估
 criterion = nn.MSELoss()
 optimizer = torch.optim.Adam(snn.parameters(), lr=learning_rate)
 

@@ -17,9 +17,9 @@ import torch.nn.functional as F
 
 
 num_classes = 10
-batch_size  = 50
-num_epochs = 101
-learning_rate = 5e-4
+batch_size  = 50 
+num_epochs = 100
+learning_rate = 10e-4
 time_window = 15
 
 probs = 0.0

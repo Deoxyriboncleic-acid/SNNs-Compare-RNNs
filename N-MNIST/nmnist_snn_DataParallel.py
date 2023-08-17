@@ -9,12 +9,15 @@ import torch, time, os
 import torch.nn as nn
 import torch.nn.functional as F
 
+import argparse
+
 os.environ['CUDA_VISIBLE_DEVICES'] = "0 , 1"
+local_rank = int(os.environ['LOCAL_RANK'])
 thresh = 0.3 # neuron activate threshold
 lens = 0.25
 decay = 0.3
 num_classes = 10
-batch_size =  40
+batch_size = 16 
 num_epochs = 100
 learning_rate = 1e-4
 time_window = 15
@@ -39,6 +42,7 @@ train_loader = torch.utils.data.DataLoader(dataset=train_dataset,
                                            shuffle=True, drop_last=True)
 
 
+#torch.cuda.set_device(args.local_rank)
 
 class ActFun(torch.autograd.Function):
 # 自定义激活函数
@@ -108,9 +112,13 @@ def mem_update(fc, x, mem, spike):
     return mem, spike
 
 snn = SNN_Model()
-#snn = nn.DataParallel(snn)
-#snn = nn.parallel.DistributedDataParallel(snn)
+#TODO:parallel
+torch.cuda.set_device(opt.local_rank)
+#torch.distributed.init_process_group(backend='nccl')
+snn = nn.DataParallel(snn)
+#snn = snn.cuda()
 snn.to(device)
+snn = torch.nn.parallel.DistributedDataParallel(snn, find_unused_parameters=True)
 
 # Loss and Optimizer
 criterion = nn.MSELoss()
