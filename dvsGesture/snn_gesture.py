@@ -29,7 +29,7 @@ n_iters_test = 60
 # How epochs to run before testing
 n_test_interval = 20
 
-batch_size = 72
+batch_size = 36
 dt = 50000 #us
 ds = 4
 target_size = 11 # num_classes
@@ -39,7 +39,7 @@ thresh = 0.3
 lens = 0.25
 decay = 0.3
 learning_rate = 1e-4
-time_window = 60
+time_window = 15
 im_dims = im_width, im_height = (128//ds, 128//ds)
 names = 'dvsGesture_stbp_50'
 
