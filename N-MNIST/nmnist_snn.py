@@ -8,6 +8,7 @@ import torch, time, os
 
 import torch.nn as nn
 import torch.nn.functional as F
+import glob
 
 os.environ['CUDA_VISIBLE_DEVICES'] = "0 , 1"
 thresh = 0.3 # neuron activate threshold
@@ -21,8 +22,10 @@ time_window = 15
 names = 'nmnist_snn_5ms_new'
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-train_path = r'/home/wqy/SNNs-RNNs/N-MNIST_data/NMNIST_train_data.mat'
-test_path = r'/home/wqy/SNNs-RNNs/N-MNIST_data/NMNIST_test_data.mat'
+train_path = r'/home/wqy/SNNs-RNNs/N_MNIST_DATA/events_np/train/9'
+test_path = r'/home/wqy/SNNs-RNNs/N_MNIST_DATA/events_np/test/9'
+#train_path = glob.glob('/home/wqy/SNNs-RNNs/N_MNIST_DATA/events_np/train/9')
+#test_path = glob.glob('/home/wqy/SNNs-RNNs/N_MNIST_DATA/events_np/test/9')
 # load datasets
 train_dataset = MyDataset(train_path, 'nmnist_h', time_window)
 

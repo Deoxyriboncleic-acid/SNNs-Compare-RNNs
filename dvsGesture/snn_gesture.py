@@ -30,7 +30,7 @@ n_iters_test = 60
 n_test_interval = 20
 
 batch_size = 36
-dt = 50000 #us
+dt = 1000 #us
 ds = 4
 target_size = 11 # num_classes
 n_epochs = 3000 # 4500

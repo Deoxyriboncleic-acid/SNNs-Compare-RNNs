@@ -1,14 +1,13 @@
 import torch
 from torchvision import datasets
-import spikingjelly.datasets as sjds
+#import spikingjelly.datasets as sjds
 from torch.utils.data import DataLoader
-from spikingjelly.datasets import pad_sequence_collate, padded_sequence_mask
-#from mnist import MNIST
+from spikingjelly.datasets import pad_sequence_collate, padded_sequence_mask, n_mnist,dvs128_gesture
 
-root_dir = '/home/wqy/SNNs-RNNs/N-MNIST_data'
+root_dir = '/home/wqy/SNNs-RNNs/N_MNIST_DATA'
 
-train_set = sjds.MNIST(root_dir, data_type='frame', duration=1000, train=True)
-test_set = sjds.MNIST(root_dir, data_type='frame', duration=1000, train=False) #1000us=1ms
+train_set = n_mnist.NMNIST(root_dir, data_type='frame', duration=1000, train=True)
+test_set = n_mnist.NMNIST(root_dir, data_type='frame', duration=1000, train=False) 
 for i in range(5):
     x, y = train_set[i]
     print(f'x[{i}].shape=[T, C, H, W]={x.shape}')

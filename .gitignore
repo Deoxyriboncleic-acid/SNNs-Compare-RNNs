@@ -1,11 +1,13 @@
 dvs_Gesture_data/
-N-MNIST_data/
+N_MNIST_DATA/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 .*.sw*
 *.bak
+
+.gitignore
 
 # C extensions
 *.so
